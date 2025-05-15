@@ -1,0 +1,49 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: #111; color: #fff; }
+
+    .navbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px; background: #222;
+    }
+
+    .website-logo {
+      background-color: #222222;
+      border-radius: 8px;
+      padding: 5px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .website-logo:hover {
+      background-color: #39f; /* light glow effect */
+    }
+
+
+
+    .left-side-navbar{
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+    }
+
+    .navbar img { height: 40px; }
+    .nav-links { display: flex; align-items: center; gap: 10px; }
+    .nav-links a { color: white; text-decoration: none; margin: 0 5px; }
+
+    .search-bar {
+      padding: 5px; border-radius: 5px; border: none;
+    }
+    a:link,
+    a:visited,
+    a:hover,
+    a:active {
+      color: #fff;
+      text-decoration: none; /* optional: removes underline */
+    }
+
+    a:hover {
+      color: #e50914; /* Netflix red */
+    }
