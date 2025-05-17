@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to AMX</title>
+  <link rel="stylesheet" href="intro.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="left-side-navbar">
+            <a href="intro.html">
+                <img src="amx-logo.png" alt="LOGO HERE" class="website-logo" draggable="false" />
+            </a>
+            <a href="home.html">Home</a>
+            <a href="movie-section.html">Movies</a>
+            <a href="tvshowsection.html">TV Shows</a>
+            <a href="animesection.html">Anime</a>
+        </div>
+        <div class="nav-links">
+            <a href="upcoming.html">Upcoming</a>
+        </div>
+    </div>
+    
+    <!-- INTRO CONTENT -->
+            <div class="intro">
+        <div class="overlay"></div>
+        
+        <div class="intro-content"> <!-- NEW -->
+            <h1><img src="AMX.png" alt="AMX"></h1>
+            <p>Your gateway to unlimited movies & shows</p>
+            <div class="search-container">
+            <input type="text" id="search-input" class="intro-search-bar" placeholder="Search movies or shows..." />
+            </div>
+            <a href="home.html" class="enter-button">Enter</a>
+        </div>
+    </div>
+        
+    <!-- BACK BUTTON placed outside -->
+    <button id="back-button" class="back-button" style="display: none;">Back</button>
+    <!-- SEARCH RESULTS placed outside intro -->
+    <div id="search-results">
+        <!-- JavaScript will insert images here -->
+        
+    </div>
+    
+    <script src="intro.js"></script>
+
+    <div id="footer-placeholder"></div>
+    <script>
+    fetch('footer.html')
+        .then(res => res.text())
+        .then(data => {
+        document.getElementById('footer-placeholder').innerHTML = data;
+        });
+    </script>
+</body>
+</html>
+
