@@ -18,10 +18,10 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
       return { minDate, today };
     }
 
-    async function fetchPaginatedResults(urlBuilder, filterFn = null, maxPages = 3) {
+    async function fetchPaginatedResults(urlBuilder, filterFn = null, maxPages = 5) {
       let allResults = [];
 
-      for (let page = 1; page <= maxPages; page++) {
+      for (let page = 1; page <= maxPages; page++) {  
         try {
           const url = urlBuilder(page);
           const res = await fetch(url);
@@ -64,7 +64,7 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
   }
 
     async function fetchTrendingAnime() {
-      const { minDate, today } = getDateRange(2);
+      const { minDate, today } = getDateRange(5);
 
       return await fetchPaginatedResults(
         page => `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_original_language=ja&with_genres=16&sort_by=popularity.desc&page=${page}`,
