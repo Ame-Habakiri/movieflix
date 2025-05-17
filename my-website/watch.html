@@ -2,20 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Watch | CineStream</title>
+  <title>Watching...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="navbar.css" />
   <link rel="stylesheet" href="watch.css" />
 </head>
 <body>
+  <div id="loading-screen">
+    <div class="spinner"></div>
+    <p></p>
+    </div>
   <div id="navbar-placeholder"></div>
+  
+  <!-- 728x90 Ad Below Video Player -->
+  <div class="native-ad-container" style="width: 728px; height: 90px; margin: 10px auto; display: block;">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : 'cac8483e3e91599b42940b7f5d73e515',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/cac8483e3e91599b42940b7f5d73e515/invoke.js"></script>
+  </div>
 
   
   <div class="player-wrapper">
     <div class="loader" id="loader"></div>
     <iframe id="player" allowfullscreen onload="document.getElementById('loader').style.display='none'"></iframe>
   </div>
+
+
+  <section id="episode-section">
+  <h2>Episodes</h2>
+
+  <label for="seasonSelect">Select Season:</label>
+  <select id="seasonSelect"></select>
+
+  <div id="episode-container">
+  <ul id="episode-list" class="episode-list-text"></ul>
+  <button id="toggle-episodes" style="display: none;">Show More</button>
+</div>
+</section>
+
   
   <div class="main-content">
     <div class="container">
@@ -73,6 +105,18 @@
   <script async="async" data-cfasync="false" src="//pl26593368.profitableratecpm.com/6428317ca59e21816d7c94751a10d098/invoke.js"></script>
   <div id="container-6428317ca59e21816d7c94751a10d098"></div>
 </div>
+
+<div id="footer-placeholder"></div>
+
+<script>
+  fetch('footer.html')
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById('footer-placeholder').innerHTML = data;
+  });
+  </script>
+
   <script type='text/javascript' src='//pl26592278.profitableratecpm.com/a1/8b/a2/a18ba2ceba44375625c4e7df13a774a7.js'></script>
+  <script type='text/javascript' src='//pl26593355.profitableratecpm.com/ea/bf/0e/eabf0efe191defc5f5f07218e349401e.js'></script>
 </body>
 </html>

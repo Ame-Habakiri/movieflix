@@ -18,7 +18,7 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
       return { minDate, today };
     }
 
-    async function fetchPaginatedResults(urlBuilder, filterFn = null, maxPages = 5) {
+    async function fetchPaginatedResults(urlBuilder, filterFn = null, maxPages = 3) {
       let allResults = [];
 
       for (let page = 1; page <= maxPages; page++) {
@@ -80,7 +80,7 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
     }
 
     async function fetchTrendingKoreanDramas() {
-      const { minDate, today } = getDateRange(4);
+      const { minDate, today } = getDateRange(5);
 
       return await fetchPaginatedResults(
         page =>
@@ -96,7 +96,7 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
     }
 
     async function fetchTrendingFilipinoSeries() {
-      const { minDate, today } = getDateRange(4);
+      const { minDate, today } = getDateRange(5);
 
       return await fetchPaginatedResults(
         page =>
@@ -312,11 +312,13 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
       const filipinos = await fetchTrendingFilipinoSeries();
 
       displayBanner(movies[Math.floor(Math.random() * movies.length)]);
-      displayList(movies.slice(0, 15), 'movies-list');
-      displayList(tvShows.slice(0, 15), 'tvshows-list');
-      displayList(anime.slice(0, 15), 'anime-list');
-      displayList(kdrama.slice(0, 15), 'k-dramas-list');
-      displayList(filipinos.slice(0, 15), 'filipino-movies');
+      displayList(movies.slice(0, 30), 'movies-list');
+      displayList(tvShows.slice(0, 30), 'tvshows-list');
+      displayList(anime.slice(0, 30), 'anime-list');
+      displayList(kdrama.slice(0, 30), 'k-dramas-list');
+      displayList(filipinos.slice(0, 30), 'filipino-movies');
+
+      hideLoadingScreen(); // <--- hide loader once all is ready
     }
 
     init();
@@ -485,4 +487,18 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
 
         loadTrendingContentSequentially();
       });
+
+      function hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+          loadingScreen.classList.add('hidden');
+          setTimeout(() => loadingScreen.style.display = 'none', 500); // optional fade-out
+        }
+      }
+
+      const img = document.createElement('img');
+        img.loading = 'lazy'; // Add this line
+
+      
+
       

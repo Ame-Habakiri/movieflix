@@ -7,10 +7,13 @@ let currentPage = 1;
 let totalPages = 1000; // TMDB max pages
 let selectedGenre = '';
 let selectedYear = '';
+let currentSearchQuery = '';
+let isSearching = false;
 
 // Populate genre dropdown from TMDB API
 async function populateGenres() {
   const genreSelect = document.getElementById('genreSelect');
+  if (!genreSelect) return;
   genreSelect.innerHTML = '<option value="">All Genres</option>';
 
   try {
@@ -33,6 +36,7 @@ async function populateGenres() {
 // Populate year dropdown from current year to 1950
 function populateYears() {
   const yearSelect = document.getElementById('yearSelect');
+  if (!yearSelect) return;
   yearSelect.innerHTML = '<option value="">All Years</option>';
 
   const currentYear = new Date().getFullYear();
@@ -44,38 +48,67 @@ function populateYears() {
   }
 }
 
-// Fetch movies from TMDB with filters and pagination
+// Fetch movies page with search or discover logic
 async function fetchMoviesPage(page) {
-  const itemsNeeded = ITEMS_PER_PAGE;
   const tmdbItemsPerPage = 20;
-  const tmdbPagesNeeded = Math.ceil(itemsNeeded / tmdbItemsPerPage);
+  const tmdbPagesNeeded = Math.ceil(ITEMS_PER_PAGE / tmdbItemsPerPage);
   const startTmdbPage = (page - 1) * tmdbPagesNeeded + 1;
 
   let allResults = [];
 
-  for (let i = 0; i < tmdbPagesNeeded; i++) {
-    const tmdbPage = startTmdbPage + i;
+  if (isSearching && currentSearchQuery.trim() !== '') {
+    // Search mode
+    for (let i = 0; i < tmdbPagesNeeded; i++) {
+      const tmdbPage = startTmdbPage + i;
 
-    const url = new URL(`${BASE_URL}/discover/movie`);
-    url.searchParams.append('api_key', API_KEY);
-    url.searchParams.append('page', tmdbPage);
-    url.searchParams.append('sort_by', 'popularity.desc');
+      const url = new URL(`${BASE_URL}/search/movie`);
+      url.searchParams.append('api_key', API_KEY);
+      url.searchParams.append('query', currentSearchQuery);
+      url.searchParams.append('page', tmdbPage);
+      url.searchParams.append('include_adult', 'false');
 
-    if (selectedGenre) url.searchParams.append('with_genres', selectedGenre);
-    if (selectedYear) url.searchParams.append('primary_release_year', selectedYear);
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
+        if (i === 0) {
+          totalPages = Math.min(Math.ceil(data.total_results / ITEMS_PER_PAGE), 1000);
+        }
 
-      if (i === 0) {
-        totalPages = Math.min(Math.ceil(data.total_results / ITEMS_PER_PAGE), 1000);
+        allResults.push(...(data.results || []).filter(item => item.poster_path));
+      } catch (error) {
+        console.error('Error searching movies:', error);
+        break;
       }
+    }
+  } else {
+    // Discover mode
+    for (let i = 0; i < tmdbPagesNeeded; i++) {
+      const tmdbPage = startTmdbPage + i;
 
-      allResults.push(...data.results.filter(item => item.poster_path));
-    } catch (error) {
-      console.error('Error fetching movies page:', error);
-      break;
+      const url = new URL(`${BASE_URL}/discover/movie`);
+      url.searchParams.append('api_key', API_KEY);
+      url.searchParams.append('page', tmdbPage);
+      url.searchParams.append('sort_by', 'release_date.desc');
+      url.searchParams.append('release_date.lte', new Date().toISOString().split('T')[0]);
+      
+
+      if (selectedGenre) url.searchParams.append('with_genres', selectedGenre);
+      if (selectedYear) url.searchParams.append('primary_release_year', selectedYear);
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (i === 0) {
+          totalPages = Math.min(Math.ceil(data.total_results / ITEMS_PER_PAGE), 1000);
+        }
+
+        allResults.push(...(data.results || []).filter(item => item.poster_path));
+      } catch (error) {
+        console.error('Error fetching movies page:', error);
+        break;
+      }
     }
   }
 
@@ -85,18 +118,20 @@ async function fetchMoviesPage(page) {
 // Display movies on the page
 function displayMovies(movies) {
   const container = document.getElementById('movieList');
+  if (!container) return;
   container.innerHTML = '';
 
   movies.forEach(item => {
     const card = document.createElement('div');
-    card.classList.add('item-card');
+    card.classList.add('item-card', 'movie-item');
+    card.setAttribute('data-title', (item.title || item.name || '').toLowerCase());
 
     const img = document.createElement('img');
     img.src = `${IMG_URL}${item.poster_path}`;
     img.alt = item.title || item.name;
     img.style.cursor = 'pointer';
     img.onclick = () => {
-    window.location.href = `watch.html?id=${item.id}&type=movie`;
+      window.location.href = `watch.html?id=${item.id}&type=movie`;
     };
 
     const title = document.createElement('p');
@@ -112,6 +147,7 @@ function displayMovies(movies) {
 // Render pagination controls
 function renderPagination(current) {
   const pagination = document.getElementById('pagination');
+  if (!pagination) return;
   pagination.innerHTML = '';
 
   const maxButtons = 5;
@@ -136,14 +172,18 @@ function renderPagination(current) {
   };
   pagination.appendChild(prevBtn);
 
-  // Reset filters button
+  // Reset filters & search button
   const resetBtn = document.createElement('button');
   resetBtn.textContent = 'Reset';
   resetBtn.onclick = () => {
     selectedGenre = '';
     selectedYear = '';
+    currentSearchQuery = '';
+    isSearching = false;
     document.getElementById('genreSelect').value = '';
     document.getElementById('yearSelect').value = '';
+    const searchInput = document.getElementById('inline-search');
+    if (searchInput) searchInput.value = '';
     currentPage = 1;
     fetchAndDisplayPage(currentPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -248,6 +288,15 @@ async function fetchAndDisplayPage(page) {
 
   try {
     const movies = await fetchMoviesPage(page);
+
+    if (movies.length === 0) {
+      const movieList = document.getElementById('movieList');
+      if (movieList) movieList.innerHTML = '<p style="color:white">No movies found.</p>';
+      const pagination = document.getElementById('pagination');
+      if (pagination) pagination.innerHTML = '';
+      return;
+    }
+
     displayMovies(movies);
     renderPagination(page);
   } catch (error) {
@@ -257,21 +306,84 @@ async function fetchAndDisplayPage(page) {
   }
 }
 
-// Initialize on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-  populateGenres();
+// Initialization function: load navbar & footer, set listeners, then fetch data
+async function init() {
+  try {
+    // Load navbar and insert
+    const resNavbar = await fetch('navbar.html');
+    const navbarHtml = await resNavbar.text();
+    document.getElementById('navbar-placeholder').innerHTML = navbarHtml;
+
+    // Attach search input listener AFTER navbar is injected
+    const searchInput = document.getElementById('inline-search');
+    if (searchInput) {
+      let debounceTimer;
+      searchInput.addEventListener('input', function () {
+        const query = this.value.trim();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          currentSearchQuery = query;
+          currentPage = 1;
+
+          if (query.length === 0) {
+            isSearching = false;
+            fetchAndDisplayPage(currentPage);
+            return;
+          }
+
+          isSearching = true;
+          fetchAndDisplayPage(currentPage);
+        }, 400);
+      });
+    }
+
+  } catch (err) {
+    console.error('Error loading navbar:', err);
+  }
+
+  try {
+    // Load footer and insert
+    const resFooter = await fetch('footer.html');
+    const footerHtml = await resFooter.text();
+    document.getElementById('footer-placeholder').innerHTML = footerHtml;
+  } catch (err) {
+    console.error('Error loading footer:', err);
+  }
+
+  // Populate filters
+  await populateGenres();
   populateYears();
 
+  // Restore saved page or default
   const savedPage = parseInt(localStorage.getItem('currentPage'), 10);
   currentPage = !isNaN(savedPage) ? savedPage : 1;
 
-  document.getElementById('applyFilters').addEventListener('click', () => {
-    selectedGenre = document.getElementById('genreSelect').value;
-    selectedYear = document.getElementById('yearSelect').value;
-    currentPage = 1;
-    fetchAndDisplayPage(currentPage);
-  });
+  // Setup Apply Filters button
+  const applyBtn = document.getElementById('applyFilters');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', () => {
+      selectedGenre = document.getElementById('genreSelect').value;
+      selectedYear = document.getElementById('yearSelect').value;
+      currentSearchQuery = '';
+      isSearching = false;
 
-  fetchAndDisplayPage(currentPage);
-});
+      // Clear search input if exists
+      const searchInput = document.getElementById('inline-search');
+      if (searchInput) searchInput.value = '';
+
+      currentPage = 1;
+      fetchAndDisplayPage(currentPage);
+    });
+  }
+
+  // Initial fetch & display
+  await fetchAndDisplayPage(currentPage);
+
+  // ✅ Hide the loading screen at the very end
+  hideLoadingScreen();
+  
+}
+
+// Run init after DOM is ready
+document.addEventListener('DOMContentLoaded', init);
 

@@ -20,20 +20,6 @@ body {
   z-index: 2;
 }
 
-.website-logo {
-  background-color: #222222;
-  border-radius: 8px;
-  padding: 5px;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.website-logo:hover {
-  background-color: #39f; /* Light glow effect */
-}
-
 .left-side-navbar {
   display: flex;
   align-items: center;
@@ -63,19 +49,19 @@ body {
 }
 
 body, html {
-  height: 100%;
+  height: auto;
+  overflow-y: auto;
   font-family: 'Poppins', sans-serif;
   background: #000;
   color: #fff;
   margin: 0;
   overflow-x: hidden; /* Prevent horizontal scrolling */
-  overflow-y: hidden; /* Initially prevent vertical scroll when intro is visible */
 }
 
 .intro {
   position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background: url('your-background-image.jpg') center center/cover no-repeat;
   display: flex;
   align-items: center;
@@ -105,10 +91,20 @@ body, html {
   z-index: 0;
 }
 
-.intro h1 {
-  font-size: 4em;
-  margin-bottom: 10px;
-  z-index: 1;
+.intro h1 img {
+  max-width: 300px;   /* limits width */
+  height: auto;       /* keeps aspect ratio */
+  display: block;     /* removes bottom whitespace */
+  margin: 0 auto;     /* centers image */
+  padding-top: 100px; /* adjust based on navbar height */
+  border-radius: 20%;
+  outline: none;
+  user-select: none;      /* Prevents selection */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  -webkit-touch-callout: none; /* Disable callout on iOS */
+  pointer-events: none;
 }
 
 .intro p {
@@ -225,4 +221,24 @@ a:active {
 
 a:hover {
   color: #e50914; /* Netflix red */
+}
+
+.left-side-navbar a:focus {
+    outline: none;
+}
+
+.website-logo {
+  user-select: none;      /* Prevents selection */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  -webkit-touch-callout: none; /* Disable callout on iOS */
+}
+
+.left-side-navbar a {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
 }
