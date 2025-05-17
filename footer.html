@@ -1,6 +1,6 @@
 <footer class="footer">
   <div class="footer-content">
-    <p>The site is still under development</p>
+    <p class="notice">⚠The site is still under development⚠</p>
     <p><strong>Disclaimer:</strong> AMX does not host any content. All media is sourced via external APIs.</p>
     <p>About: AMX is a personal project showcasing movie and show discovery via TMDB.</p>
     <p>if you have encounter any issue or suggestions feel free to contact me below.</p>
@@ -45,5 +45,29 @@
 
 .footer-links a {
   margin: 0 10px;
+}
+
+.notice {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;                      /* bright white for contrast */
+  background-color: #e50914;       /* match link/red theme */
+  padding: 10px 18px;
+  border-radius: 5px;
+  text-align: center;
+  margin: 0 auto 20px auto;
+  font-family: 'Arial Black', Arial, sans-serif;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.4);  /* soft glow */
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.notice {
+  animation: pulse 2s infinite;
 }
 </style>
