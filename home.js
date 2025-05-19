@@ -223,6 +223,7 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
         const img = document.createElement('img');
         img.src = `${IMG_URL}${item.poster_path}`;
         img.alt = item.title || item.name;
+        img.loading = 'lazy';
         img.onclick = () => {
           const type = item.media_type || (item.title ? 'movie' : 'tv');
           window.location.href = `watch.html?id=${item.id}&type=${type}`;
@@ -455,6 +456,7 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
           const img = document.createElement('img');
           img.src = `${IMG_URL}${item.poster_path}`;  // <-- Fixed here
           img.alt = item.title || item.name;
+          img.loading = 'lazy';
           container.appendChild(img);
         });
       }   
@@ -498,7 +500,3 @@ const API_KEY = 'a6df4f6938a6d277a9cae99e8179c1af';
 
       const img = document.createElement('img');
         img.loading = 'lazy'; // Add this line
-
-      
-
-      

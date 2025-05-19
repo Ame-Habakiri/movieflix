@@ -87,11 +87,14 @@ async function fetchMoviesPage(page) {
       const tmdbPage = startTmdbPage + i;
 
       const url = new URL(`${BASE_URL}/discover/movie`);
+      const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      const oneMonthAgoStr = oneMonthAgo.toISOString().split('T')[0];  
       url.searchParams.append('api_key', API_KEY);
       url.searchParams.append('page', tmdbPage);
       url.searchParams.append('sort_by', 'release_date.desc');
-      url.searchParams.append('release_date.lte', new Date().toISOString().split('T')[0]);
-      
+      url.searchParams.append('primary_release_date.lte', oneMonthAgoStr);
+      url.searchParams.append('release_date.gte', '1950-01-01');
 
       if (selectedGenre) url.searchParams.append('with_genres', selectedGenre);
       if (selectedYear) url.searchParams.append('primary_release_year', selectedYear);
